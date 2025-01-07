@@ -66,8 +66,9 @@ struct SignInView: View {
                     .bold()
                     .frame(maxWidth: .infinity, alignment: .center)
             }
-
         }
+        .padding()
+        .navigationBarBackButtonHidden()
     }
 }
 

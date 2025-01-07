@@ -13,6 +13,7 @@ struct VollmedApp: App {
         WindowGroup {
             NavigationStack {
                 SignInView()
+                SignUpView()
             }
         }
     }
