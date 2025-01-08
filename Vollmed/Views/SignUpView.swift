@@ -8,12 +8,17 @@
 import SwiftUI
 
 struct SignUpView: View {
+    let service = WebService()
+    
     @State private var nameField: String = ""
     @State private var cpfField: String = ""
     @State private var emailField: String = ""
     @State private var phoneField: String = ""
     @State private var healthPlanField: String
     @State private var passwordField: String = ""
+    @State private var showAlert: Bool = false
+    @State private var isPatientRegistered: Bool = false
+    @State private var navigateToSignIn: Bool = false
     
     let healthPlans: [String] = [
         "Amil", "Unimed", "Bradesco Saúde", "SulAmérica", "Hapvida", "Notredame Intermédica", "São Francisco Saúde", "Golden Cross", "Medial Saúde", "Outro", "América Saúde"
@@ -21,6 +26,35 @@ struct SignUpView: View {
     
     init(){
         self.healthPlanField = healthPlans.first!
+    }
+    
+    func register() async {
+        let patient = Patient(
+            id: nil,
+            name: nameField,
+            cpf: cpfField,
+            email: emailField,
+            phoneNumber: phoneField,
+            password: passwordField,
+            healthPlan: healthPlanField
+        )
+        print("Payload enviado: \(patient)")
+        do {
+            if let patientRegistered = try await service.registerPatient(
+                patient: patient) {
+                print("Paciente, \(patientRegistered.name) cadastrado com sucesso!")
+                isPatientRegistered = true
+                showAlert = true
+                navigateToSignIn = true
+            } else {
+                isPatientRegistered = false
+                showAlert = true
+            }
+        } catch {
+            isPatientRegistered = false
+            print("Ocorreu um erro ao cadastrar paciente: \(error)")
+            showAlert = true
+        }
     }
     
     var body: some View {
@@ -112,7 +146,9 @@ struct SignUpView: View {
                     .cornerRadius(16.0)
                 
                 Button {
-                    print(healthPlanField)
+                    Task {
+                        await register()
+                    }
                 } label: {
                     ButtonView(text: "Criar conta")
                 }
@@ -131,6 +167,22 @@ struct SignUpView: View {
         }
         .navigationBarBackButtonHidden()
         .padding()
+        .alert(
+            isPatientRegistered ? "Sucesso" : "Ocorrou algum erro",
+            isPresented: $showAlert,
+            presenting: $isPatientRegistered) { _ in
+                Button (action: {}, label: {
+                    Text("Ok")
+                })
+            } message: { _ in
+                if isPatientRegistered {
+                    Text("Sua conta foi criada com sucesso!")
+                } else {
+                    Text("Ocorreu algum erro!")
+                }
+            }
+            
+            .
     }
 }
 
