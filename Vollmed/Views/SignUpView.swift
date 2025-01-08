@@ -181,8 +181,10 @@ struct SignUpView: View {
                     Text("Ocorreu algum erro!")
                 }
             }
-            
-            .
+            .navigationDestination(
+                isPresented: $navigateToSignIn) {
+                    SignInView()
+                }
     }
 }
 
