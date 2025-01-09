@@ -17,7 +17,7 @@ struct LoginRequest: Codable {
     }
 }
 
-struct loginResponse: Identifiable, Codable {
+struct LoginResponse: Identifiable, Codable {
     let auth: Bool
     let id: String
     let token: String
