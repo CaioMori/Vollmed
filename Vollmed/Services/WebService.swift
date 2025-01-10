@@ -7,11 +7,35 @@
 
 import UIKit
 
-let patientID = "b25aa67b-203e-4a79-b0e0-3f5c560cd317"
-
 struct WebService {
     
     private let baseURL = "http://localhost:3000"
+    
+    func logoutPatient() async throws -> Bool {
+        let endpoint = baseURL + "/auth/logout"
+        
+        guard let url = URL(string: endpoint) else {
+            print("Erro na URL!")
+            return false
+        }
+        
+        guard let token = UserDefaultsHelper.get(for: "token") else {
+            print("Erro ao buscar token!")
+            return false
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let (_, response) = try await URLSession.shared.data(for: request)
+        
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+            return true
+        }
+        
+        return true
+    }
     
     func loginPatient(loginRequest: LoginRequest) async throws -> LoginResponse? {
         let endpoint = baseURL + "/auth/login"
@@ -59,6 +83,11 @@ struct WebService {
     func cancelAppointment(appointmentID: String, reasonToCancel: String) async throws -> Bool {
         let endpoint = baseURL + "/consulta/" + appointmentID
         
+        guard let token = UserDefaultsHelper.get(for: "token") else {
+            print("Erro ao recuperar token!")
+            return false
+        }
+        
         guard let url = URL(string: endpoint) else {
             print("Erro na URL!")
             return false
@@ -71,6 +100,7 @@ struct WebService {
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.httpBody = jsonData
         
         let (_, response) = try await URLSession.shared.data(for: request)
@@ -87,6 +117,11 @@ struct WebService {
     func rescheduleAppointment(appointmentID: String, date: String) async throws -> ScheduleAppointmentResponse? {
         let endpoint = baseURL + "/consulta/" + appointmentID
         
+        guard let token = UserDefaultsHelper.get(for: "token") else {
+            print("Erro ao recuperar token!")
+            return nil
+        }
+        
         guard let url = URL(string: endpoint) else {
             print("Erro na URL!")
             return nil
@@ -99,6 +134,7 @@ struct WebService {
         var request = URLRequest(url: url)
         request.httpMethod = "PATCH"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.httpBody = jsonData
         
         let (data, _) = try await URLSession.shared.data(for: request)
@@ -111,12 +147,22 @@ struct WebService {
     func getAllAppointmentsFromPatient(patientID: String) async throws -> [Appointment]? {
         let endpoint = baseURL + "/paciente/" + patientID + "/consultas"
         
+        guard let token = UserDefaultsHelper.get(for: "token") else {
+            print("Erro ao recuperar token!")
+            return nil
+        }
+        
         guard let url = URL(string: endpoint) else {
             print("Erro na URL!")
             return nil
         }
         
-        let (data, _) = try await URLSession.shared.data(from: url)
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
         
         let appointments = try JSONDecoder().decode([Appointment].self, from: data)
         
@@ -133,6 +179,11 @@ struct WebService {
             return nil
         }
         
+        guard let token = UserDefaultsHelper.get(for: "token") else {
+            print("Erro ao recuperar token!")
+            return nil
+        }
+        
         let appointment = ScheduleAppointmentRequest(specialist: specialistID, patient: patientID, date: date)
         
         let jsonData = try JSONEncoder().encode(appointment)
@@ -140,6 +191,7 @@ struct WebService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.httpBody = jsonData
         
         let (data, _) = try await URLSession.shared.data(for: request)
