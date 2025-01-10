@@ -13,6 +13,8 @@ struct HomeView: View {
     
     @State private var specialists: [Specialist] = []
     
+    var authManager = AuthenticationManager.shared
+    
     func getSpecialists() async {
         do {
             if let specialists = try await service.getAllSpecialists() {
@@ -27,8 +29,8 @@ struct HomeView: View {
         do {
             let logoutSuccessful = try await service.logoutPatient()
             if logoutSuccessful {
-                UserDefaultsHelper.remove(for: "token")
-                UserDefaultsHelper.remove(for: "patient-id")
+                authManager.removeToken()
+                authManager.removePatientID()
             }
         } catch {
             print("Ocorreu um erro no logout \(error)")
@@ -72,7 +74,6 @@ struct HomeView: View {
                     Task {
                         await handleLogout()
                     }
-                    print("logout")
                 } label: {
                     HStack {
                         Text("Logout")

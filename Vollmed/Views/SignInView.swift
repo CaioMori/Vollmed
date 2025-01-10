@@ -14,6 +14,8 @@ struct SignInView: View {
     @State private var navigateToSignIn: Bool = false
     @State private var isLoading: Bool = false
     
+    var authManager = AuthenticationManager.shared
+    
     let webService = WebService()
     
     func login() async {
@@ -21,8 +23,8 @@ struct SignInView: View {
         do {
             if let response = try await webService.loginPatient(
                 loginRequest: LoginRequest(email: email, password: password)) {
-                UserDefaultsHelper.save(value: response.token, key: "token")
-                UserDefaultsHelper.save(value: response.id, key: "patient-id")
+                authManager.saveToken(token: response.token)
+                authManager.savePatientID(id: response.id)
                 navigateToSignIn = true
             } else {
                 showAlert = true

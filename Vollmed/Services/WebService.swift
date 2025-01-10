@@ -11,6 +11,8 @@ struct WebService {
     
     private let baseURL = "http://localhost:3000"
     
+    var authManager = AuthenticationManager.shared
+    
     func logoutPatient() async throws -> Bool {
         let endpoint = baseURL + "/auth/logout"
         
@@ -19,7 +21,7 @@ struct WebService {
             return false
         }
         
-        guard let token = UserDefaultsHelper.get(for: "token") else {
+        guard let token = authManager.token else {
             print("Erro ao buscar token!")
             return false
         }
@@ -83,7 +85,7 @@ struct WebService {
     func cancelAppointment(appointmentID: String, reasonToCancel: String) async throws -> Bool {
         let endpoint = baseURL + "/consulta/" + appointmentID
         
-        guard let token = UserDefaultsHelper.get(for: "token") else {
+        guard let token = authManager.token else {
             print("Erro ao recuperar token!")
             return false
         }
@@ -117,7 +119,7 @@ struct WebService {
     func rescheduleAppointment(appointmentID: String, date: String) async throws -> ScheduleAppointmentResponse? {
         let endpoint = baseURL + "/consulta/" + appointmentID
         
-        guard let token = UserDefaultsHelper.get(for: "token") else {
+        guard let token = authManager.token else {
             print("Erro ao recuperar token!")
             return nil
         }
@@ -147,7 +149,7 @@ struct WebService {
     func getAllAppointmentsFromPatient(patientID: String) async throws -> [Appointment]? {
         let endpoint = baseURL + "/paciente/" + patientID + "/consultas"
         
-        guard let token = UserDefaultsHelper.get(for: "token") else {
+        guard let token = authManager.token else {
             print("Erro ao recuperar token!")
             return nil
         }
@@ -179,7 +181,7 @@ struct WebService {
             return nil
         }
         
-        guard let token = UserDefaultsHelper.get(for: "token") else {
+        guard let token = authManager.token else {
             print("Erro ao recuperar token!")
             return nil
         }

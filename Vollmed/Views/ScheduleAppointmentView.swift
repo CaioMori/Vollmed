@@ -14,6 +14,8 @@ struct ScheduleAppointmentView: View {
     var isRescheduleView: Bool
     var appointmentID: String?
     
+    var authManager = AuthenticationManager.shared
+    
     @State private var selectedDate = Date()
     @State private var showAlert = false
     @State private var isAppointmentScheduled = false
@@ -43,7 +45,7 @@ struct ScheduleAppointmentView: View {
     }
     
     func scheduleAppointment() async {
-        guard let patientID = UserDefaultsHelper.get(for: "patient-id") else {
+        guard let patientID = authManager.patientID else {
             print("Erro ao recuperar ID do paciente!")
             return
         }
