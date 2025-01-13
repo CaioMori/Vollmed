@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		FD2F7CD22D353FD700D48F98 /* Vollmed.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Vollmed.xcodeproj; sourceTree = "<group>"; };
 		FDAF58B82D27325C009746FD /* Vollmed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vollmed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -29,6 +30,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FD2F7CD42D353FD700D48F98 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		FDAF58AF2D27325C009746FD = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +103,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FDAF58B92D27325C009746FD /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = FD2F7CD42D353FD700D48F98 /* Products */;
+					ProjectRef = FD2F7CD22D353FD700D48F98 /* Vollmed.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				FDAF58B72D27325C009746FD /* Vollmed */,
