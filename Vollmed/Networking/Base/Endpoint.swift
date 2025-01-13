@@ -17,9 +17,11 @@ protocol Endpoint {
 }
 
 extension Endpoint {
-    var scheme: String { return "https" }
+    var scheme: String {
+        return "http"
+    }
     
     var host: String {
-        return "localhost:3000"
+        return "localhost"
     }
 }

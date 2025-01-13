@@ -13,11 +13,6 @@ protocol HomeServiceable {
 
 struct HomeNetworkingService: HTTPClient, HomeServiceable {
     func getAllSpecialists() async throws -> Result<[Specialist]?, RequestError> {
-        return await sendRequest(
-            endpoint: HomeEndpoint.getAllSpecialists,
-            responseModel: [Specialist].self
-        )
+        return await sendRequest(endpoint: HomeEndpoint.getAllSpecialists, responseModel: [Specialist].self)
     }
-
-
 }

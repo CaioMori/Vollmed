@@ -12,10 +12,8 @@ struct HomeViewModel {
     // MARK: - Attributes
     
     let service: HomeServiceable
-    
     let authService: AuthenticationServiceable
-    
-    let authManager = AuthenticationManager.shared
+    var authManager = AuthenticationManager.shared
     
     // MARK: - Init
     
@@ -37,11 +35,11 @@ struct HomeViewModel {
         }
     }
     
-    func logout() async throws {
-       let result = await authService.logout()
+    func logout() async {
+        let result = await authService.logout()
         
         switch result {
-        case .success(_):
+        case .success(_ ):
             authManager.removeToken()
             authManager.removePatientID()
         case .failure(let error):

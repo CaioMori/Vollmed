@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct HomeView: View {
-
-    var viewModel = HomeViewModel(
-        service: HomeNetworkingService(),
-        authService: AuthenticationService()
-    )
+    
+    let service = WebService()
+    var viewModel = HomeViewModel(service: HomeNetworkingService(),
+                                  authService: AuthenticationService())
     
     @State private var specialists: [Specialist] = []
     
@@ -46,9 +45,7 @@ struct HomeView: View {
             Task {
                 do {
                     guard let response = try await viewModel.getSpecialists() else { return }
-                    DispatchQueue.main.async {
-                        self.specialists = response
-                    }
+                    self.specialists = response
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -56,21 +53,16 @@ struct HomeView: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
+                Button(action: {
                     Task {
-                        do {
-                            try await viewModel.logout()
-                        } catch {
-                            print(error.localizedDescription)
-                        }
+                        await viewModel.logout()
                     }
-                } label: {
-                    HStack {
-                        Text("Logout")
+                }, label: {
+                    HStack(spacing: 2) {
                         Image(systemName: "rectangle.portrait.and.arrow.right")
+                        Text("Logout")
                     }
-                }
-
+                })
             }
         }
     }

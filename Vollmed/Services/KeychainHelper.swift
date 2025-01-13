@@ -30,10 +30,7 @@ struct KeychainHelper {
         ]
         
         var dataTypeRef: AnyObject?
-        let status: OSStatus = SecItemCopyMatching(
-            query as CFDictionary,
-            &dataTypeRef
-        )
+        let status: OSStatus = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
         
         if status == errSecSuccess {
             if let data = dataTypeRef as? Data {

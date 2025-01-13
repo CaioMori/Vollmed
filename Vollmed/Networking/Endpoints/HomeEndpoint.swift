@@ -15,7 +15,7 @@ extension HomeEndpoint: Endpoint {
     var path: String {
         switch self {
         case .getAllSpecialists:
-            return "/specialista"
+            return "/especialista"
         }
     }
     
@@ -26,9 +26,9 @@ extension HomeEndpoint: Endpoint {
         }
     }
     
-    var header: [String: String]? {
+    var header: [String : String]? {
         switch self {
-            case .getAllSpecialists:
+        case .getAllSpecialists:
             return nil
         }
     }

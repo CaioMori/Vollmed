@@ -10,7 +10,6 @@ import UIKit
 struct WebService {
     
     private let baseURL = "http://localhost:3000"
-    
     var authManager = AuthenticationManager.shared
     
     func logoutPatient() async throws -> Bool {
@@ -22,13 +21,13 @@ struct WebService {
         }
         
         guard let token = authManager.token else {
-            print("Erro ao buscar token!")
+            print("Token não informado!")
             return false
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         let (_, response) = try await URLSession.shared.data(for: request)
         
@@ -36,16 +35,18 @@ struct WebService {
             return true
         }
         
-        return true
+        return false
     }
     
-    func loginPatient(loginRequest: LoginRequest) async throws -> LoginResponse? {
+    func loginPatient(email: String, password: String) async throws -> LoginResponse? {
         let endpoint = baseURL + "/auth/login"
         
         guard let url = URL(string: endpoint) else {
             print("Erro na URL!")
             return nil
         }
+        
+        let loginRequest = LoginRequest(email: email, password: password)
         
         let jsonData = try JSONEncoder().encode(loginRequest)
         
@@ -68,6 +69,7 @@ struct WebService {
             print("Erro na URL!")
             return nil
         }
+        
         let jsonData = try JSONEncoder().encode(patient)
         
         var request = URLRequest(url: url)
@@ -85,13 +87,13 @@ struct WebService {
     func cancelAppointment(appointmentID: String, reasonToCancel: String) async throws -> Bool {
         let endpoint = baseURL + "/consulta/" + appointmentID
         
-        guard let token = authManager.token else {
-            print("Erro ao recuperar token!")
+        guard let url = URL(string: endpoint) else {
+            print("Erro na URL!")
             return false
         }
         
-        guard let url = URL(string: endpoint) else {
-            print("Erro na URL!")
+        guard let token = authManager.token else {
+            print("Token não informado!")
             return false
         }
         
@@ -119,13 +121,13 @@ struct WebService {
     func rescheduleAppointment(appointmentID: String, date: String) async throws -> ScheduleAppointmentResponse? {
         let endpoint = baseURL + "/consulta/" + appointmentID
         
-        guard let token = authManager.token else {
-            print("Erro ao recuperar token!")
+        guard let url = URL(string: endpoint) else {
+            print("Erro na URL!")
             return nil
         }
         
-        guard let url = URL(string: endpoint) else {
-            print("Erro na URL!")
+        guard let token = authManager.token else {
+            print("Token não informado!")
             return nil
         }
         
@@ -149,19 +151,18 @@ struct WebService {
     func getAllAppointmentsFromPatient(patientID: String) async throws -> [Appointment]? {
         let endpoint = baseURL + "/paciente/" + patientID + "/consultas"
         
-        guard let token = authManager.token else {
-            print("Erro ao recuperar token!")
-            return nil
-        }
-        
         guard let url = URL(string: endpoint) else {
             print("Erro na URL!")
             return nil
         }
         
+        guard let token = authManager.token else {
+            print("Token não informado!")
+            return nil
+        }
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         let (data, _) = try await URLSession.shared.data(for: request)
@@ -182,7 +183,7 @@ struct WebService {
         }
         
         guard let token = authManager.token else {
-            print("Erro ao recuperar token!")
+            print("Token não informado!")
             return nil
         }
         

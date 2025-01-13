@@ -13,8 +13,6 @@ protocol AuthenticationServiceable {
 
 struct AuthenticationService: HTTPClient, AuthenticationServiceable {
     func logout() async -> Result<Bool?, RequestError> {
-        return await sendRequest(
-            endpoint: AuthenticationEndpoint.logout,
-            responseModel: nil)
+        return await sendRequest(endpoint: AuthenticationEndpoint.logout, responseModel: nil)
     }
 }
