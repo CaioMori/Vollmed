@@ -11,34 +11,41 @@ struct HomeViewModel {
     
     // MARK: - Attributes
     
-    let service = WebService()
+    let service: HomeServiceable
+    
+    let authService: AuthenticationServiceable
     
     let authManager = AuthenticationManager.shared
     
+    // MARK: - Init
+    
+    init(service: HomeServiceable, authService: AuthenticationServiceable) {
+        self.service = service
+        self.authService = authService
+    }
+    
     // MARK: - Class methods
     
-    func getSpecialists() async throws -> [Specialist] {
-        do {
-            if let fetchSpecialists = try await service.getAllSpecialists() {
-                return fetchSpecialists
-            }
-            
-            return []
-        } catch {
-            print("Ocorreu um erro ao buscar especialistas: \(error)")
+    func getSpecialists() async throws -> [Specialist]? {
+        let result = try await service.getAllSpecialists()
+        
+        switch result {
+        case .success(let response):
+            return response
+        case .failure(let error):
             throw error
         }
     }
     
     func logout() async throws {
-        do {
-            let logoutSuccessful = try await service.logoutPatient()
-            if logoutSuccessful {
-                authManager.removeToken()
-                authManager.removePatientID()
-            }
-        } catch {
-            print("Ocorreu um erro no logout: \(error)")
+       let result = await authService.logout()
+        
+        switch result {
+        case .success(_):
+            authManager.removeToken()
+            authManager.removePatientID()
+        case .failure(let error):
+            print(error.localizedDescription)
         }
     }
 }
