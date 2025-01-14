@@ -40,7 +40,6 @@ extension HTTPClient {
             }
             
             switch response.statusCode {
-                
             case 200...299:
                 guard let responseModel = responseModel else {
                     return .success(nil)
@@ -51,6 +50,13 @@ extension HTTPClient {
                 }
                 
                 return .success(decodedResponse)
+                
+            case 400:
+                guard let errorResponse = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                    return .failure(.unknown)
+                }
+                return .failure(.custom(errorResponse))
+                
             case 401:
                 return .failure(.unauthorized)
                 
