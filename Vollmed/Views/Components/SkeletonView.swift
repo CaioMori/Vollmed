@@ -25,6 +25,7 @@ struct SkeletonRow: View {
                 .mask {
                     Circle()
                         .frame(width: 60, height: 60, alignment: .leading)
+                        .redactedAnimation()
                 }
                 .frame(width: 60, height: 60)
                 
@@ -36,6 +37,7 @@ struct SkeletonRow: View {
                     .mask {
                         Text(placeholderString)
                             .redacted(reason: .placeholder)
+                            .redactedAnimation()
                     }
                     LinearGradient(
                         gradient: Gradient(colors: [.gray, .white, .gray]),
@@ -44,6 +46,7 @@ struct SkeletonRow: View {
                     .mask {
                         Text(placeholderString)
                             .redacted(reason: .placeholder)
+                            .redactedAnimation()
                     }
                 }
             }

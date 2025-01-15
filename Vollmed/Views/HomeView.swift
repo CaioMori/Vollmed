@@ -54,6 +54,7 @@ struct HomeView: View {
             .onAppear {
                 Task {
                     do {
+                        isLoading = false
                         guard let response = try await viewModel.getSpecialists() else { return }
                         self.specialists = response
                     } catch {
