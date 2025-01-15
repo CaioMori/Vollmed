@@ -39,11 +39,6 @@ O projeto utiliza o padrão arquitetural **MVVM (Model-View-ViewModel)** para or
 
 ---
 
-## **Capturas de Tela**
-> Inclua capturas de tela do aplicativo, se disponíveis, para ilustrar funcionalidades.
-
----
-
 ## **Como Executar o Projeto**
 1. Clone o repositório:
    ```bash
