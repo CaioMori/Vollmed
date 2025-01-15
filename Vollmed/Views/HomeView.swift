@@ -9,14 +9,13 @@ import SwiftUI
 
 struct HomeView: View {
     
-    let service = WebService()
     var viewModel = HomeViewModel(service: HomeNetworkingService(),
                                   authService: AuthenticationService())
     
     @State private var specialists: [Specialist] = []
-    @State private var isShowingSnackbar: Bool = false
-    @State private var isLoading: Bool = true
-    @State private var errorMessage: String? = ""
+    @State private var isShowingSnackBar = false
+    @State private var isFetchingData = true
+    @State private var errorMessage = ""
     
     var body: some View {
         ZStack {
@@ -38,10 +37,9 @@ struct HomeView: View {
                         .multilineTextAlignment(.center)
                         .padding(.vertical, 16)
                     
-                    if isLoading {
+                    if isFetchingData {
                         SkeletonView()
                     } else {
-                        
                         ForEach(specialists) { specialist in
                             SpecialistCardView(specialist: specialist)
                                 .padding(.bottom, 8)
@@ -54,13 +52,13 @@ struct HomeView: View {
             .onAppear {
                 Task {
                     do {
-                        isLoading = false
                         guard let response = try await viewModel.getSpecialists() else { return }
                         self.specialists = response
+                        isFetchingData = false
                     } catch {
-                        isShowingSnackbar = true
+                        isShowingSnackBar = true
                         let errorType = error as? RequestError
-                        errorMessage = errorType?.errorDescription
+                        errorMessage = errorType?.errorDescription ?? "Ops! Ocorreu um erro"
                     }
                 }
             }
@@ -78,11 +76,8 @@ struct HomeView: View {
                     })
                 }
             }
-            if isShowingSnackbar {
-                SnackbarErrorView(
-                    isShowing: $isShowingSnackbar,
-                    message: errorMessage
-                )
+            if isShowingSnackBar {
+                SnackbarErrorView(isShowing: $isShowingSnackBar, message: errorMessage)
             }
         }
     }

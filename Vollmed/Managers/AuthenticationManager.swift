@@ -14,28 +14,36 @@ class AuthenticationManager: ObservableObject {
     @Published var token: String?
     @Published var patientID: String?
     
-    private init(){
+    private init() {
         self.token = KeychainHelper.get(for: "app-vollmed-token")
         self.patientID = KeychainHelper.get(for: "app-vollmed-patient-id")
     }
     
     func saveToken(token: String) {
         KeychainHelper.save(value: token, key: "app-vollmed-token")
-        self.token = token
+        DispatchQueue.main.async {
+            self.token = token
+        }
     }
     
-    func removeToken(){
+    func removeToken() {
         KeychainHelper.remove(for: "app-vollmed-token")
-        self.token = nil
+        DispatchQueue.main.async {
+            self.token = nil
+        }
     }
     
     func savePatientID(id: String) {
         KeychainHelper.save(value: id, key: "app-vollmed-patient-id")
-        self.patientID = id
+        DispatchQueue.main.async {
+            self.patientID = id
+        }
     }
     
     func removePatientID() {
         KeychainHelper.remove(for: "app-vollmed-patient-id")
-        self.patientID = nil
+        DispatchQueue.main.async {
+            self.patientID = nil
+        }
     }
 }

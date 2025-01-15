@@ -10,6 +10,9 @@ import SwiftUI
 struct ScheduleAppointmentView: View {
     
     let service = WebService()
+    let scheduleService = ScheduleAppointmentViewModel(
+        service: AppointmentService()
+    )
     var authManager = AuthenticationManager.shared
 
     var specialistID: String
@@ -49,7 +52,11 @@ struct ScheduleAppointmentView: View {
             return
         }
         do {
-            if let _ = try await  service.scheduleAppointment(specialistID: specialistID, patientID: patientID, date: selectedDate.convertToString()) {
+            if let _ = try await  scheduleService.scheduleAppointment(
+                specialist: specialistID,
+                patient: patientID,
+                date: selectedDate.convertToString()
+            ) {
                 isAppointmentScheduled = true
             } else {
                 isAppointmentScheduled = false

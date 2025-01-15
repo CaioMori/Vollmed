@@ -9,7 +9,7 @@ import UIKit
 
 struct WebService {
     
-    private let baseURL = "http://localhost:3000"
+    private let baseURL = "http://localhost"
     var authManager = AuthenticationManager.shared
     
     func logoutPatient() async throws -> Bool {

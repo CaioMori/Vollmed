@@ -9,7 +9,9 @@ import SwiftUI
 
 struct MyAppointmentsView: View {
     
-    let service = WebService()
+    let service = MyAppointmentsViewModel(
+        service: AppointmentService()
+    )
     var authManager = AuthenticationManager.shared
     
     @State private var appointments: [Appointment] = []
@@ -19,7 +21,9 @@ struct MyAppointmentsView: View {
             return
         }
         do {
-            if let appointments = try await service.getAllAppointmentsFromPatient(patientID: patientID) {
+            if let appointments = try await service.getAllAppointmentsFromPatient(
+                patientID: patientID
+            ) {
                 self.appointments = appointments
             }
         } catch {
